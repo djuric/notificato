@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 class User {
-  @Authorize(UserTypes.Role.Administrator)
+  @Authorize()
   async create(userData: UserTypes.createData): Promise<Error | UserEntity> {
     let user = await getManager().findOne(UserEntity, {
       email: userData.email,
@@ -26,13 +26,13 @@ class User {
     return getManager().save(Object.assign(user, userData));
   }
 
-  @Authorize(UserTypes.Role.Administrator)
+  @Authorize()
   update(userData: UserTypes.updateData): Promise<UserEntity> {
     const user = new UserEntity();
     return getManager().save(Object.assign(user, userData));
   }
 
-  @Authorize(UserTypes.Role.Administrator)
+  @Authorize()
   delete(userData: UserTypes.deleteData): Promise<DeleteResult> {
     return getManager().delete(UserEntity, userData.id);
   }

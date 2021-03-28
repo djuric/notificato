@@ -1,7 +1,7 @@
 import User from './user';
 import * as UserTypes from '../types/user';
 
-export const Authorize = (role = UserTypes.Role.Subscriber) => (
+export const Authorize = (role = UserTypes.Role.Administrator) => (
   _: Object,
   _2: string,
   descriptor: PropertyDescriptor
