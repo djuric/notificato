@@ -1,3 +1,5 @@
+import * as CategoryType from './category';
+
 export type User = {
   id: number;
   email: string;
@@ -5,6 +7,7 @@ export type User = {
   lastName?: string;
   displayName?: string;
   role: Role;
+  categories: CategoryType.Category[];
 };
 
 export enum Role {
@@ -23,6 +26,7 @@ export interface createData extends Authentication {
   lastName?: string;
   displayName?: string;
   role?: Role;
+  categories?: CategoryType.Category[];
 }
 
 export interface updateData extends Authentication {
@@ -31,6 +35,7 @@ export interface updateData extends Authentication {
   firstName?: string;
   lastName?: string;
   displayName?: string;
+  categories?: CategoryType.Category[];
 }
 
 export interface deleteData extends Authentication {
