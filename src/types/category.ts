@@ -1,8 +1,8 @@
 export type Category = {
   id: number;
   name: string;
-  description: string;
-  parent: number;
+  description?: string;
+  parent?: Category;
 };
 
 export interface Authentication {
@@ -12,14 +12,14 @@ export interface Authentication {
 export interface createData extends Authentication {
   name: string;
   description?: string;
-  parent?: number;
+  parent?: Category;
 }
 
 export interface updateData extends Authentication {
   id: number;
   name?: string;
   description?: string;
-  parent?: number;
+  parent?: Category;
 }
 
 export interface deleteData extends Authentication {

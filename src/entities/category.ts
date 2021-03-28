@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 export class Category {
@@ -11,6 +17,9 @@ export class Category {
   @Column('text')
   description!: string;
 
-  @Column('text')
-  parent!: string;
+  @ManyToOne(() => Category, (category) => category.children)
+  parent!: Category;
+
+  @OneToMany(() => Category, (category) => category.parent)
+  children!: Category[];
 }
