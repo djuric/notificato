@@ -14,3 +14,14 @@ export interface createData extends Authentication {
   description?: string;
   parent?: number;
 }
+
+export interface updateData extends Authentication {
+  id: number;
+  name?: string;
+  description?: string;
+  parent?: number;
+}
+
+export interface deleteData extends Authentication {
+  id: number;
+}
