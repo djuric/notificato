@@ -7,7 +7,7 @@ export type User = {
   lastName?: string;
   displayName?: string;
   role: Role;
-  categories: CategoryType.Category[];
+  categories?: CategoryType.Category[];
 };
 
 export enum Role {

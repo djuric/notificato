@@ -1,9 +1,15 @@
 import { Category as CategoryEntity } from '../entities/category';
 import { Authorize } from './auth';
 import * as CategoryTypes from '../types/category';
+import * as UserTypes from '../types/user';
 import { getManager } from 'typeorm';
 
 class Category {
+  @Authorize(UserTypes.Role.Subscriber)
+  get(id: number, authToken: string) {
+    return getManager().findOne(CategoryEntity, id);
+  }
+
   @Authorize()
   create(categoryData: CategoryTypes.createData, authToken: string) {
     const category = new CategoryEntity();

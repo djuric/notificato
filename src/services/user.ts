@@ -43,7 +43,12 @@ class User {
         return new Error('You are not allowed to edit this user.');
       }
 
-      const allowedFields = ['firstName', 'lastName', 'displayName'];
+      const allowedFields = [
+        'firstName',
+        'lastName',
+        'displayName',
+        'categories',
+      ];
       userData = pick(userData, [
         'id',
         ...allowedFields,
