@@ -8,24 +8,20 @@ export type Message = {
   user: UserType.User;
 };
 
-export interface Authentication {
-  authToken: string;
-}
-
-export interface createData extends Authentication {
+export interface createData {
   title: string;
   subtitle?: string;
   description?: string;
   user: UserType.User;
 }
 
-export interface updateData extends Authentication {
+export interface updateData {
   id: number;
   title?: string;
   subtitle?: string;
   description?: string;
 }
 
-export interface deleteData extends Authentication {
+export interface deleteData {
   id: number;
 }

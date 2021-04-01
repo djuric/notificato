@@ -9,12 +9,13 @@ export const Authorize = (role = UserTypes.Role.Administrator) => (
   const originalMethod = descriptor.value;
 
   descriptor.value = async function (...args: any[]) {
-    const isAuthenticated = User.verifyToken(args[0].authToken);
+    const isAuthenticated = User.verifyToken(args[1]);
 
     if (!(isAuthenticated instanceof Error)) {
       const isAuthorized = await User.authorize(isAuthenticated.id, role);
 
-      if (isAuthorized === true) {
+      if (!(isAuthorized instanceof Error)) {
+        args[2] = isAuthorized;
         return originalMethod.apply(this, args);
       }
 

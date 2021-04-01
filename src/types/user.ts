@@ -15,11 +15,7 @@ export enum Role {
   Administrator = 5,
 }
 
-export interface Authentication {
-  authToken: string;
-}
-
-export interface createData extends Authentication {
+export interface createData {
   email: string;
   password: string;
   firstName?: string;
@@ -29,7 +25,7 @@ export interface createData extends Authentication {
   categories?: CategoryType.Category[];
 }
 
-export interface updateData extends Authentication {
+export interface updateData {
   id: number;
   email?: string;
   firstName?: string;
@@ -38,7 +34,7 @@ export interface updateData extends Authentication {
   categories?: CategoryType.Category[];
 }
 
-export interface deleteData extends Authentication {
+export interface deleteData {
   id: number;
 }
 

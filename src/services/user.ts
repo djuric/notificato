@@ -2,13 +2,17 @@ import { User as UserEntity } from '../entities/user';
 import * as UserTypes from '../types/user';
 import { Authorize } from './auth';
 import { DeleteResult, getManager } from 'typeorm';
+import { pick } from 'lodash';
 import config from 'config';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 class User {
   @Authorize()
-  async create(userData: UserTypes.createData): Promise<Error | UserEntity> {
+  async create(
+    userData: UserTypes.createData,
+    authToken: string
+  ): Promise<Error | UserEntity> {
     let user = await getManager().findOne(UserEntity, {
       email: userData.email,
     });
@@ -26,14 +30,34 @@ class User {
     return getManager().save(Object.assign(user, userData));
   }
 
-  @Authorize()
-  update(userData: UserTypes.updateData): Promise<UserEntity> {
+  @Authorize(UserTypes.Role.Subscriber)
+  async update(
+    userData: UserTypes.updateData,
+    authToken: string,
+    authorizedUser?: UserTypes.User
+  ): Promise<Error | UserEntity> {
     const user = new UserEntity();
+
+    if (authorizedUser?.role !== UserTypes.Role.Administrator) {
+      if (authorizedUser?.id !== userData.id) {
+        return new Error('You are not allowed to edit this user.');
+      }
+
+      const allowedFields = ['firstName', 'lastName', 'displayName'];
+      userData = pick(userData, [
+        'id',
+        ...allowedFields,
+      ]) as UserTypes.updateData;
+    }
+
     return getManager().save(Object.assign(user, userData));
   }
 
   @Authorize()
-  delete(userData: UserTypes.deleteData): Promise<DeleteResult> {
+  delete(
+    userData: UserTypes.deleteData,
+    authToken: string
+  ): Promise<DeleteResult> {
     return getManager().delete(UserEntity, userData.id);
   }
 
@@ -88,7 +112,10 @@ class User {
     }
   }
 
-  async authorize(userId: number, role: UserTypes.Role): Promise<true | Error> {
+  async authorize(
+    userId: number,
+    role: UserTypes.Role
+  ): Promise<UserTypes.User | Error> {
     const user = await getManager().findOne(UserEntity, {
       id: userId,
     });
@@ -103,7 +130,7 @@ class User {
       );
     }
 
-    return true;
+    return user;
   }
 }
 

@@ -5,20 +5,20 @@ import { getManager } from 'typeorm';
 
 class Category {
   @Authorize()
-  create(categoryData: CategoryTypes.createData) {
+  create(categoryData: CategoryTypes.createData, authToken: string) {
     const category = new CategoryEntity();
     // TODO: Validation (title not empty, title lenght, subtitle length,...)
     return getManager().save(Object.assign(category, categoryData));
   }
 
   @Authorize()
-  update(categoryData: CategoryTypes.updateData) {
+  update(categoryData: CategoryTypes.updateData, authToken: string) {
     const category = new CategoryEntity();
     return getManager().save(Object.assign(category, categoryData));
   }
 
   @Authorize()
-  delete(categoryData: CategoryTypes.deleteData) {
+  delete(categoryData: CategoryTypes.deleteData, authToken: string) {
     return getManager().delete(CategoryEntity, categoryData.id);
   }
 }

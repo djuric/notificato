@@ -5,23 +5,19 @@ export type Category = {
   parent?: Category;
 };
 
-export interface Authentication {
-  authToken: string;
-}
-
-export interface createData extends Authentication {
+export interface createData {
   name: string;
   description?: string;
   parent?: Category;
 }
 
-export interface updateData extends Authentication {
+export interface updateData {
   id: number;
   name?: string;
   description?: string;
   parent?: Category;
 }
 
-export interface deleteData extends Authentication {
+export interface deleteData {
   id: number;
 }
