@@ -1,11 +1,9 @@
 import { User as UserEntity } from '../entities/user';
 import * as UserTypes from '../types/user';
-import { Authorize } from './auth';
+import { Authorize, generateToken } from './auth';
 import { DeleteResult, getManager } from 'typeorm';
 import { pick } from 'lodash';
-import config from 'config';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 class User {
   @Authorize()
@@ -87,7 +85,7 @@ class User {
     }
 
     const userObject = user as UserTypes.User;
-    const token = await this.generateToken(userObject);
+    const token = await generateToken(userObject);
 
     const userSessionData: UserTypes.sessionData = {
       user: userObject,
@@ -95,47 +93,6 @@ class User {
     };
 
     return userSessionData;
-  }
-
-  private async generateToken(userData: UserTypes.User): Promise<string> {
-    const tokenData: UserTypes.tokenData = {
-      id: userData.id,
-      email: userData.email,
-    };
-
-    return jwt.sign(tokenData, config.get('jwtPrivateKey'), {
-      expiresIn: '2 days',
-    });
-  }
-
-  verifyToken(token: string): Error | UserTypes.tokenData {
-    try {
-      const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
-      return decoded as UserTypes.tokenData;
-    } catch {
-      return new Error('Invalid token.');
-    }
-  }
-
-  async authorize(
-    userId: number,
-    role: UserTypes.Role
-  ): Promise<UserTypes.User | Error> {
-    const user = await getManager().findOne(UserEntity, {
-      id: userId,
-    });
-
-    if (user === undefined) {
-      return new Error('User not found.');
-    }
-
-    if (user.role < role) {
-      return new Error(
-        "You don't have enough permissions to perform the requested operation."
-      );
-    }
-
-    return user;
   }
 }
 
