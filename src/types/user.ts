@@ -43,6 +43,11 @@ export type loginData = {
   password: string;
 };
 
+export type registerData = {
+  email: string;
+  password: string;
+};
+
 export type sessionData = {
   user: User;
   authToken: string;

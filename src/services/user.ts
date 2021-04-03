@@ -64,6 +64,47 @@ class User {
     return getManager().delete(UserEntity, userData.id);
   }
 
+  async register(
+    userData: UserTypes.registerData
+  ): Promise<Error | UserTypes.sessionData> {
+    // TODO: Validation (email not empty, email format, password length, ...)
+
+    let user = await getManager().findOne(UserEntity, {
+      email: userData.email,
+    });
+
+    if (user instanceof UserEntity) {
+      return new Error('User with this email already exists.');
+    }
+
+    user = new UserEntity();
+
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(userData.password, salt);
+
+    let createUserData: UserTypes.createData = {
+      email: userData.email,
+      password,
+    };
+
+    const newUser = await getManager().save(
+      Object.assign(user, createUserData)
+    );
+
+    if (!(newUser instanceof UserEntity)) {
+      return new Error('Creating user failed.');
+    }
+
+    const token = await generateToken(newUser);
+
+    const userSessionData: UserTypes.sessionData = {
+      user: newUser,
+      authToken: token,
+    };
+
+    return userSessionData;
+  }
+
   async login(
     userData: UserTypes.loginData
   ): Promise<Error | UserTypes.sessionData> {
