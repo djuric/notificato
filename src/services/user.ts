@@ -6,6 +6,18 @@ import { pick } from 'lodash';
 import bcrypt from 'bcrypt';
 
 class User {
+  @Authorize(UserTypes.Role.Subscriber)
+  get(id: number, authToken: string, authorizedUser?: UserTypes.User) {
+    if (
+      authorizedUser?.role !== UserTypes.Role.Administrator &&
+      authorizedUser?.id !== id
+    ) {
+      return new Error('You are not allowed to view this user.');
+    }
+
+    return getManager().findOne(UserEntity, id);
+  }
+
   @Authorize()
   async create(
     userData: UserTypes.createData,
