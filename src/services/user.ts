@@ -59,7 +59,14 @@ class User {
       ]) as UserTypes.updateData;
     }
 
-    return getManager().save(Object.assign(user, userData));
+    const savedUser = await getManager().save(Object.assign(user, userData));
+    const updatedUser = await getManager().findOne(UserEntity, savedUser.id);
+
+    if (!(updatedUser instanceof UserEntity)) {
+      return new Error('Could not retrieve updated user.');
+    }
+
+    return updatedUser;
   }
 
   @Authorize()
