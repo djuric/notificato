@@ -36,6 +36,12 @@ class User {
   ): Promise<Error | UserEntity> {
     const user = new UserEntity();
 
+    let existingUser = await getManager().findOne(UserEntity, userData.id);
+
+    if (existingUser === undefined) {
+      return new Error('User not found.');
+    }
+
     if (authorizedUser?.role !== UserTypes.Role.Administrator) {
       if (authorizedUser?.id !== userData.id) {
         return new Error('You are not allowed to edit this user.');
