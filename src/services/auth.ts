@@ -4,7 +4,7 @@ import { getManager } from 'typeorm';
 import config from 'config';
 import jwt from 'jsonwebtoken';
 
-const TOKEN_EXPIRES_IN = '2 days';
+const TOKEN_EXPIRES_IN = '1 day';
 
 function verifyToken(token: string): Error | UserTypes.tokenData {
   try {
