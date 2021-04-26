@@ -22,7 +22,7 @@ export interface createData {
   lastName?: string;
   displayName?: string;
   role?: Role;
-  categories?: CategoryType.Category[];
+  categories?: number[];
 }
 
 export interface updateData {
@@ -31,7 +31,7 @@ export interface updateData {
   firstName?: string;
   lastName?: string;
   displayName?: string;
-  categories?: CategoryType.Category[];
+  categories?: number[];
 }
 
 export interface deleteData {

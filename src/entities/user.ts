@@ -42,7 +42,9 @@ export class User {
   @OneToMany(() => Message, (message) => message.user)
   messages!: Message[];
 
-  @ManyToMany(() => Category)
+  @ManyToMany(() => Category, {
+    eager: true,
+  })
   @JoinTable()
   categories!: Category[];
 

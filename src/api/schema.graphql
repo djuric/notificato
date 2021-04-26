@@ -1,0 +1,72 @@
+enum Role {
+  Subscriber
+  Administrator
+}
+
+type User {
+  id: Int
+  email: String
+  firstName: String
+  lastName: String
+  displayName: String
+  role: Role
+  categories: [Category]
+}
+
+type Category {
+  id: Int
+  name: String
+  description: String
+  parent: Category
+}
+
+type SessionData {
+  user: User
+  authToken: String
+}
+
+input LoginUserInput {
+  email: String
+  password: String
+}
+
+input RegisterUserInput {
+  email: String
+  password: String
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+  firstName: String
+  lastName: String
+  displayName: String
+  role: Role
+  categories: [Int]
+}
+
+input UpdateUserInput {
+  id: Int!
+  email: String
+  firstName: String
+  lastName: String
+  displayName: String
+  categories: [Int]
+}
+
+input DeleteUserInput {
+  id: Int!
+}
+
+type Query {
+  user(id: Int!): User
+  category(id: Int!): Category
+}
+
+type Mutation {
+  loginUser(input: LoginUserInput!): SessionData
+  registerUser(input: RegisterUserInput!): SessionData
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(input: DeleteUserInput!): Boolean
+}

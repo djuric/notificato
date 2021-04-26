@@ -11,8 +11,10 @@
   "author": "Zarko Djuric",
   "license": "ISC",
   "dependencies": {
+    "apollo-server": "^2.22.2",
     "bcrypt": "^5.0.1",
     "config": "^3.3.6",
+    "graphql": "^15.5.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mysql": "^2.18.1",
