@@ -1,5 +1,6 @@
 import { User as UserEntity } from '../entities/user';
 import * as UserTypes from '../types/user';
+import { Category as CategoryEntity } from '../entities/category';
 import { Authorize, generateToken } from './auth';
 import { DeleteResult, getManager } from 'typeorm';
 import { pick } from 'lodash';
@@ -7,7 +8,7 @@ import bcrypt from 'bcrypt';
 
 class User {
   @Authorize(UserTypes.Role.Subscriber)
-  get(id: number, authToken: string, authorizedUser?: UserTypes.User) {
+  async get(id: number, authToken: string, authorizedUser?: UserTypes.User) {
     if (
       authorizedUser?.role !== UserTypes.Role.Administrator &&
       authorizedUser?.id !== id
@@ -15,7 +16,13 @@ class User {
       return new Error('You are not allowed to view this user.');
     }
 
-    return getManager().findOne(UserEntity, id);
+    const user = await getManager().findOne(UserEntity, id);
+
+    if (user === undefined) {
+      return new Error("This user doesn't exist.");
+    }
+
+    return user;
   }
 
   @Authorize()
@@ -36,6 +43,13 @@ class User {
 
     const salt = await bcrypt.genSalt(10);
     userData.password = await bcrypt.hash(userData.password, salt);
+
+    if (userData.categories) {
+      user.categories = userData.categories.map((id) => {
+        return { id } as CategoryEntity;
+      });
+      delete userData.categories;
+    }
 
     return getManager().save(Object.assign(user, userData));
   }
@@ -69,6 +83,13 @@ class User {
         'id',
         ...allowedFields,
       ]) as UserTypes.updateData;
+    }
+
+    if (userData.categories) {
+      user.categories = userData.categories.map((id) => {
+        return { id } as CategoryEntity;
+      });
+      delete userData.categories;
     }
 
     const savedUser = await getManager().save(Object.assign(user, userData));
