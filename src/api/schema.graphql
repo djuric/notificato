@@ -61,6 +61,7 @@ input DeleteUserInput {
 type Query {
   user(id: Int!): User
   category(id: Int!): Category
+  categories: [Category]
 }
 
 type Mutation {

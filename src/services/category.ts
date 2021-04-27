@@ -10,6 +10,11 @@ class Category {
     return getManager().findOne(CategoryEntity, id);
   }
 
+  @Authorize(UserTypes.Role.Subscriber)
+  getAll(categoryData: CategoryTypes.getData, authToken: string) {
+    return getManager().find(CategoryEntity);
+  }
+
   @Authorize()
   create(categoryData: CategoryTypes.createData, authToken: string) {
     const category = new CategoryEntity();

@@ -16,6 +16,9 @@ const resolvers = {
     category: async (_: any, { id }: any, { token }: any) => {
       return await Category.get(id, token);
     },
+    categories: async (_: any, { id }: any, { token }: any) => {
+      return await Category.getAll({}, token);
+    },
   },
   Mutation: {
     loginUser: async (_: any, { input }: any) => {
