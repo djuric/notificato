@@ -51,7 +51,13 @@ class Category {
     return getManager().save(Object.assign(category, categoryData));
   }
 
-  delete(categoryData: CategoryTypes.deleteData) {
+  delete(
+    categoryData: CategoryTypes.deleteData,
+    userTokenData: UserTypes.tokenData
+  ) {
+    if (userTokenData.role !== UserTypes.Role.Administrator) {
+      return new Error(`You don't have permission to update the category.`);
+    }
     return getManager().delete(CategoryEntity, categoryData.id);
   }
 }

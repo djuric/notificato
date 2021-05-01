@@ -72,6 +72,17 @@ const resolvers = {
       }
       return Category.update(input, tokenData);
     },
+    deleteCategory: async (_: any, { input }: any, { tokenData }: any) => {
+      if (tokenData instanceof Error) {
+        return tokenData;
+      }
+      const deleteResult = await Category.delete(input, tokenData);
+
+      if (deleteResult instanceof Error) {
+        return deleteResult;
+      }
+      return Boolean(deleteResult.affected);
+    },
   },
 };
 
