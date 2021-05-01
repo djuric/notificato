@@ -56,6 +56,7 @@ export type sessionData = {
 export type tokenData = {
   id: number;
   email: string;
+  role: Role;
   iat?: number;
   exp?: number;
 };

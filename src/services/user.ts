@@ -1,41 +1,42 @@
 import { User as UserEntity } from '../entities/user';
 import * as UserTypes from '../types/user';
 import { Category as CategoryEntity } from '../entities/category';
-import { Authorize, generateToken } from './auth';
+import { generateToken } from './auth';
 import { DeleteResult, getManager } from 'typeorm';
 import { pick } from 'lodash';
 import bcrypt from 'bcrypt';
 
 class User {
-  @Authorize(UserTypes.Role.Subscriber)
-  async get(id: number, authToken: string, authorizedUser?: UserTypes.User) {
-    if (
-      authorizedUser?.role !== UserTypes.Role.Administrator &&
-      authorizedUser?.id !== id
-    ) {
-      return new Error('You are not allowed to view this user.');
+  async get(id: number, userTokenData: UserTypes.tokenData) {
+    if (userTokenData.role !== UserTypes.Role.Administrator) {
+      if (userTokenData.id !== id) {
+        return new Error(`You are not allowed to view this user.`);
+      }
     }
 
     const user = await getManager().findOne(UserEntity, id);
 
     if (user === undefined) {
-      return new Error("This user doesn't exist.");
+      return new Error(`This user doesn't exist.`);
     }
 
     return user;
   }
 
-  @Authorize()
   async create(
     userData: UserTypes.createData,
-    authToken: string
+    userTokenData: UserTypes.tokenData
   ): Promise<Error | UserEntity> {
+    if (userTokenData.role !== UserTypes.Role.Administrator) {
+      return new Error(`You don't have permission to create new user.`);
+    }
+
     let user = await getManager().findOne(UserEntity, {
       email: userData.email,
     });
 
     if (user !== undefined) {
-      return new Error('User with this email already exists.');
+      return new Error(`User with this email already exists.`);
     }
 
     user = new UserEntity();
@@ -54,23 +55,20 @@ class User {
     return getManager().save(Object.assign(user, userData));
   }
 
-  @Authorize(UserTypes.Role.Subscriber)
   async update(
     userData: UserTypes.updateData,
-    authToken: string,
-    authorizedUser?: UserTypes.User
+    userTokenData: UserTypes.tokenData
   ): Promise<Error | UserEntity> {
     const user = new UserEntity();
-
-    let existingUser = await getManager().findOne(UserEntity, userData.id);
+    const existingUser = await getManager().findOne(UserEntity, userData.id);
 
     if (existingUser === undefined) {
-      return new Error('User not found.');
+      return new Error(`User not found.`);
     }
 
-    if (authorizedUser?.role !== UserTypes.Role.Administrator) {
-      if (authorizedUser?.id !== userData.id) {
-        return new Error('You are not allowed to edit this user.');
+    if (userTokenData.role !== UserTypes.Role.Administrator) {
+      if (userTokenData.id !== userData.id) {
+        return new Error(`You are not allowed to edit this user.`);
       }
 
       const allowedFields = [
@@ -96,17 +94,20 @@ class User {
     const updatedUser = await getManager().findOne(UserEntity, savedUser.id);
 
     if (!(updatedUser instanceof UserEntity)) {
-      return new Error('Could not retrieve updated user.');
+      return new Error(`Could not retrieve updated user.`);
     }
 
     return updatedUser;
   }
 
-  @Authorize()
-  delete(
+  async delete(
     userData: UserTypes.deleteData,
-    authToken: string
-  ): Promise<DeleteResult> {
+    userTokenData: UserTypes.tokenData
+  ): Promise<Error | DeleteResult> {
+    if (userTokenData.role !== UserTypes.Role.Administrator) {
+      return new Error(`You don't have permission to delete this user.`);
+    }
+
     return getManager().delete(UserEntity, userData.id);
   }
 

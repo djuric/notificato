@@ -21,8 +21,3 @@ export interface updateData {
 export interface deleteData {
   id: number;
 }
-
-export interface getData {
-  limit?: number;
-  offset?: number;
-}

@@ -3,6 +3,7 @@ import path from 'path';
 import { ApolloServer } from 'apollo-server';
 import Category from '../services/category';
 import User from '../services/user';
+import { verifyToken } from '../services/auth';
 
 const resolvers = {
   Role: {
@@ -10,14 +11,17 @@ const resolvers = {
     Administrator: 5,
   },
   Query: {
-    user: async (_: any, { id }: any, { token }: any) => {
-      return await User.get(id, token);
+    user: async (_: any, { id }: any, { tokenData }: any) => {
+      if (tokenData instanceof Error) {
+        return tokenData;
+      }
+      return await User.get(id, tokenData);
     },
-    category: async (_: any, { id }: any, { token }: any) => {
-      return await Category.get(id, token);
+    category: async (_: any, { id }: any) => {
+      return await Category.get(id);
     },
-    categories: async (_: any, { id }: any, { token }: any) => {
-      return await Category.getAll({}, token);
+    categories: async () => {
+      return await Category.getAll();
     },
   },
   Mutation: {
@@ -27,14 +31,27 @@ const resolvers = {
     registerUser: async (_: any, { input }: any) => {
       return await User.register(input);
     },
-    createUser: async (_: any, { input }: any, { token }: any) => {
-      return await User.create(input, token);
+    createUser: async (_: any, { input }: any, { tokenData }: any) => {
+      if (tokenData instanceof Error) {
+        return tokenData;
+      }
+      return await User.create(input, tokenData);
     },
-    updateUser: async (_: any, { input }: any, { token }: any) => {
-      return User.update(input, token);
+    updateUser: async (_: any, { input }: any, { tokenData }: any) => {
+      if (tokenData instanceof Error) {
+        return tokenData;
+      }
+      return User.update(input, tokenData);
     },
-    deleteUser: async (_: any, { input }: any, { token }: any) => {
-      const deleteResult = await User.delete(input, token);
+    deleteUser: async (_: any, { input }: any, { tokenData }: any) => {
+      if (tokenData instanceof Error) {
+        return tokenData;
+      }
+      const deleteResult = await User.delete(input, tokenData);
+
+      if (deleteResult instanceof Error) {
+        return deleteResult;
+      }
       return Boolean(deleteResult.affected);
     },
   },
@@ -43,10 +60,12 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs: readFileSync(path.join(__dirname, 'schema.graphql')).toString(),
   resolvers,
-  context: ({ req }) => {
+  context: async ({ req }) => {
     let token = req.headers.authorization || '';
     token = token.replace('Bearer ', '');
-    return { token };
+
+    const tokenData = verifyToken(token);
+    return { tokenData };
   },
 });
 
