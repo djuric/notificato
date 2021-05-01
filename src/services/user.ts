@@ -23,6 +23,14 @@ class User {
     return user;
   }
 
+  async getAll(userTokenData: UserTypes.tokenData) {
+    if (userTokenData.role !== UserTypes.Role.Administrator) {
+      return new Error(`You don't have permission to list all users.`);
+    }
+
+    return getManager().find(UserEntity);
+  }
+
   async create(
     userData: UserTypes.createData,
     userTokenData: UserTypes.tokenData

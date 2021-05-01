@@ -60,6 +60,7 @@ input DeleteUserInput {
 
 type Query {
   user(id: Int!): User
+  users: [User]
   category(id: Int!): Category
   categories: [Category]
 }

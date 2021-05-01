@@ -17,6 +17,12 @@ const resolvers = {
       }
       return await User.get(id, tokenData);
     },
+    users: async (_: any, _2: any, { tokenData }: any) => {
+      if (tokenData instanceof Error) {
+        return tokenData;
+      }
+      return await User.getAll(tokenData);
+    },
     category: async (_: any, { id }: any) => {
       return await Category.get(id);
     },
