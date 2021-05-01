@@ -1,7 +1,0 @@
-{
-  "type": "mysql",
-  "entities": ["src/entities/**/*.ts"],
-  "migrations": ["src/migrations/*.ts"],
-  "synchronize": true,
-  "logging": false
-}
