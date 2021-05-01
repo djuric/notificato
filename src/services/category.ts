@@ -19,16 +19,35 @@ class Category {
     if (userTokenData.role !== UserTypes.Role.Administrator) {
       return new Error(`You don't have permission to create new category.`);
     }
-
-    console.log(categoryData);
+    // TODO: category with same name cant be added
+    // can unique key constrain solve this on DB level?
 
     const category = new CategoryEntity();
     // TODO: Validation (title not empty, title lenght, subtitle length,...)
     return getManager().save(Object.assign(category, categoryData));
   }
 
-  update(categoryData: CategoryTypes.updateData) {
+  async update(
+    categoryData: CategoryTypes.updateData,
+    userTokenData: UserTypes.tokenData
+  ) {
+    if (userTokenData.role !== UserTypes.Role.Administrator) {
+      return new Error(`You don't have permission to update the category.`);
+    }
+
     const category = new CategoryEntity();
+    const existingCategory = await getManager().findOne(
+      CategoryEntity,
+      categoryData.id
+    );
+
+    if (existingCategory === undefined) {
+      return new Error(`Category not found.`);
+    }
+
+    // TODO: category with same name cant be added
+    // can unique key constrain solve this on DB level?
+
     return getManager().save(Object.assign(category, categoryData));
   }
 

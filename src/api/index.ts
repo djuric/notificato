@@ -66,6 +66,12 @@ const resolvers = {
       }
       return Category.create(input, tokenData);
     },
+    updateCategory: async (_: any, { input }: any, { tokenData }: any) => {
+      if (tokenData instanceof Error) {
+        return tokenData;
+      }
+      return Category.update(input, tokenData);
+    },
   },
 };
 

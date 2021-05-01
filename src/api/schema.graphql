@@ -64,6 +64,13 @@ input CreateCategoryInput {
   parent: Int
 }
 
+input UpdateCategoryInput {
+  id: Int!
+  name: String
+  description: String
+  parent: Int
+}
+
 type Query {
   user(id: Int!): User
   users: [User]
@@ -78,4 +85,5 @@ type Mutation {
   updateUser(input: UpdateUserInput!): User
   deleteUser(input: DeleteUserInput!): Boolean
   createCategory(input: CreateCategoryInput!): Category
+  updateCategory(input: UpdateCategoryInput!): Category
 }
