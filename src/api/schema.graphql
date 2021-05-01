@@ -58,6 +58,12 @@ input DeleteUserInput {
   id: Int!
 }
 
+input CreateCategoryInput {
+  name: String!
+  description: String
+  parent: Int
+}
+
 type Query {
   user(id: Int!): User
   users: [User]
@@ -71,4 +77,5 @@ type Mutation {
   createUser(input: CreateUserInput!): User
   updateUser(input: UpdateUserInput!): User
   deleteUser(input: DeleteUserInput!): Boolean
+  createCategory(input: CreateCategoryInput!): Category
 }

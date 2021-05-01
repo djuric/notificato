@@ -60,6 +60,12 @@ const resolvers = {
       }
       return Boolean(deleteResult.affected);
     },
+    createCategory: async (_: any, { input }: any, { tokenData }: any) => {
+      if (tokenData instanceof Error) {
+        return tokenData;
+      }
+      return Category.create(input, tokenData);
+    },
   },
 };
 
