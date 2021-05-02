@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev src/app.ts",
     "watch": "tsc -w",
-    "copy-schemas": "cpx src/**/*.graphql dist",
-    "build": "tsc && npm run copy-schemas",
+    "copy-schema": "cpx src/api/schema.graphql dist/api",
+    "build": "tsc && npm run copy-schema",
     "start": "npm run build && cross-env NODE_ENV=production node dist/app.js"
   },
   "author": "Zarko Djuric",
