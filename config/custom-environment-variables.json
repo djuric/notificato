@@ -1,5 +1,6 @@
 {
   "jwtPrivateKey": "notificato_jwtPrivateKey",
+  "port": "notificato_port",
   "db": {
     "host": "notificato_dbHost",
     "name": "notificato_dbName",

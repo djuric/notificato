@@ -4,6 +4,7 @@ import { ApolloServer } from 'apollo-server';
 import Category from '../services/category';
 import User from '../services/user';
 import { verifyToken } from '../services/auth';
+import config from 'config';
 
 const resolvers = {
   Role: {
@@ -98,9 +99,9 @@ const server = new ApolloServer({
   },
 });
 
-export default async function apiServer(port: number = 4000) {
+export default async function apiServer() {
   const apiServer = await server.listen({
-    port,
+    port: config.get('port'),
   });
   console.log(`Server ready at ${apiServer.url}`);
 }

@@ -1,3 +1,4 @@
 {
-  "name": "Notificato - Production"
+  "name": "Notificato - Production",
+  "port": 4000
 }

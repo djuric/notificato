@@ -2,5 +2,6 @@
   "name": "Notificato - Default",
   "db": {
     "password": ""
-  }
+  },
+  "port": 4000
 }
